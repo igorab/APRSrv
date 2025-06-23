@@ -1,0 +1,50 @@
+﻿@page "/CreateTask"
+@using APRSrv.Services
+@using APRSrv.Models
+@inject RobotTaskService RobotTaskService
+
+<h1>Управление задачами робота</h1>
+
+<div>
+    <h2>Создать новую задачу</h2>
+    <input @bind="newTaskName" placeholder="Имя задачи" />
+    <button @onclick="CreateTask">Создать задачу</button>
+</div>
+
+<div>
+    <h2>Существующие задачи</h2>
+    <ul>
+        @foreach (var task in robotTasks)
+        {
+            <li>@task.Date - @task.TaskName</li>
+        }
+    </ul>
+</div>
+
+@code {
+    private string newTaskName;
+
+    private List<RobotTask> robotTasks = new List<RobotTask>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        robotTasks = await RobotTaskService.GetRobotTasksAsync();
+    }
+
+    private async Task CreateTask()
+    {
+        if (!string.IsNullOrWhiteSpace(newTaskName))
+        {
+            var newTask = new RobotTask
+            {
+                Date = DateTime.Now,
+                TaskId = robotTasks.Count + 1, // Пример генерации TaskId
+                TaskName = newTaskName
+            };
+
+            await RobotTaskService.CreateRobotTaskAsync(newTask);
+            robotTasks = await RobotTaskService.GetRobotTasksAsync(); // Обновляем список задач
+            newTaskName = string.Empty; // Очищаем поле ввода
+        }
+    }
+}

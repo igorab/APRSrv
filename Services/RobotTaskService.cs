@@ -19,7 +19,8 @@ namespace APRSrv.Services
 
         public async Task<List<RobotTask>> GetRobotTasksAsync()
         {
-            return await _httpClient.GetFromJsonAsync<List<RobotTask>>("http://localhost:5143/api/RobotTask");
+            return new List<RobotTask> { new RobotTask() {TaskId = 1, TaskValue = 234, TaskName = "Go!" } }; 
+            //return await _httpClient.GetFromJsonAsync<List<RobotTask>>("http://localhost:5143/api/RobotTask");
         }
 
         public async Task<RobotTask> CreateRobotTaskAsync(RobotTask robotTask)
